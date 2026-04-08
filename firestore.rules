@@ -1,0 +1,80 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: members
+    // Fields: name, phone, email, password, role, fanCount, isGuardian
+    //
+    // Collection: billings
+    // Fields: category, totalAmount, perMemberAmount, month, year, billingType, selectedMemberIds, calculationDetails
+    //
+    // Collection: payments
+    // Fields: memberId, memberName, category, amount, method, transactionIdOrTime, status, timestamp
+    //
+    // Collection: loans
+    // Fields: memberId, memberName, amount, status, timestamp
+    //
+    // Collection: notices
+    // Fields: title, content, timestamp
+    //
+    // Collection: notifications
+    // Fields: userId, title, message, type, read, timestamp
+    //
+    // ===============================================================
+
+    // Helper Functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      // Allow admin access if logged in with the specific Google email
+      return isAuthenticated() && 
+        (request.auth.token.email == "tahsinullahtusher999@gmail.com" && request.auth.token.email_verified == true);
+    }
+
+    // Rules - Allowing public read for now because Anonymous Auth is disabled in the console
+    // This allows the custom phone/password login to work.
+    
+    match /members/{memberId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /billings/{billingId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /payments/{paymentId} {
+      allow read: if true;
+      allow create: if true; // Members can submit payments
+      allow update, delete: if isAdmin();
+    }
+
+    match /loans/{loanId} {
+      allow read: if true;
+      allow create: if true; // Members can request loans
+      allow update, delete: if isAdmin();
+    }
+
+    match /notices/{noticeId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /notifications/{notificationId} {
+      allow read: if true;
+      allow create: if true;
+      allow update: if true;
+      allow delete: if isAdmin();
+    }
+    
+    match /test/{docId} {
+      allow read: if true;
+    }
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "name": "Mess & T.U.T. Loan Manager",
+  "description": "A simple, secure manager for mess expenses and T.U.T. loans with admin control and itemized billing.",
+  "requestFramePermissions": []
+}

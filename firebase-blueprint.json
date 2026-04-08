@@ -1,0 +1,122 @@
+{
+  "entities": {
+    "Member": {
+      "title": "Member",
+      "description": "A member of the mess.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" },
+        "password": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "member"] },
+        "fanCount": { "type": "number" },
+        "isGuardian": { "type": "boolean" }
+      },
+      "required": ["name", "phone", "password", "role"]
+    },
+    "Billing": {
+      "title": "Billing",
+      "description": "Monthly itemized billing for the mess.",
+      "type": "object",
+      "properties": {
+        "category": { "type": "string", "enum": ["House Rent", "Chef", "Internet", "Waste", "Electricity", "Other"] },
+        "totalAmount": { "type": "number" },
+        "perMemberAmount": { "type": "number" },
+        "month": { "type": "string" },
+        "year": { "type": "string" },
+        "billingType": { "type": "string", "enum": ["Standard", "Current Bill"] },
+        "selectedMemberIds": { "type": "array", "items": { "type": "string" } },
+        "calculationDetails": {
+          "type": "object",
+          "properties": {
+            "basePortion": { "type": "number" },
+            "fanPortion": { "type": "number" },
+            "totalFans": { "type": "number" }
+          }
+        }
+      },
+      "required": ["category", "totalAmount", "month", "year", "billingType", "selectedMemberIds"]
+    },
+    "Payment": {
+      "title": "Payment",
+      "description": "Payment record for an expense category.",
+      "type": "object",
+      "properties": {
+        "memberId": { "type": "string" },
+        "memberName": { "type": "string" },
+        "category": { "type": "string" },
+        "amount": { "type": "number" },
+        "method": { "type": "string", "enum": ["Cash", "Bkash", "Nagad"] },
+        "transactionIdOrTime": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected"] },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["memberId", "category", "amount", "method", "transactionIdOrTime", "status", "timestamp"]
+    },
+    "LoanRequest": {
+      "title": "LoanRequest",
+      "description": "Request for a T.U.T. loan.",
+      "type": "object",
+      "properties": {
+        "memberId": { "type": "string" },
+        "memberName": { "type": "string" },
+        "amount": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected"] },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["memberId", "amount", "status", "timestamp"]
+    },
+    "Notice": {
+      "title": "Notice",
+      "description": "A notice for all members.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "content", "timestamp"]
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "A notification for a member.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "message": { "type": "string" },
+        "type": { "type": "string", "enum": ["bill", "notice", "reminder"] },
+        "read": { "type": "boolean" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "title", "message", "type", "read", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/members/{memberId}": {
+      "schema": "Member",
+      "description": "Collection of mess members."
+    },
+    "/billings/{billingId}": {
+      "schema": "Billing",
+      "description": "Collection of monthly billings."
+    },
+    "/payments/{paymentId}": {
+      "schema": "Payment",
+      "description": "Collection of payment records."
+    },
+    "/loans/{loanId}": {
+      "schema": "LoanRequest",
+      "description": "Collection of loan requests."
+    },
+    "/notices/{noticeId}": {
+      "schema": "Notice",
+      "description": "Collection of notices."
+    },
+    "/notifications/{notificationId}": {
+      "schema": "Notification",
+      "description": "Collection of notifications for members."
+    }
+  }
+}
